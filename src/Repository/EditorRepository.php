@@ -17,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EditorRepository extends ServiceEntityRepository
 {
+    use ProfileTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Editor::class);
@@ -42,15 +44,7 @@ class EditorRepository extends ServiceEntityRepository
 
     public function findByUser(User $user): ?Editor
     {
-        return $this->createQueryBuilder('e')
-            // faire une jointure avec l'utilisateur associé au profil editeur
-            ->join('e.user', 'u')
-            // ne retenir que le profil éditeur qui est associé a l'utilisateur passé en paramètre de la fonction
-            ->andWhere('u.id = :userId')
-            ->setParameter('userId', $user->getId())
-            // exécution de la requête
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->__findByUser($user);
     }
 
 
