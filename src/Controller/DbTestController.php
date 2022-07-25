@@ -156,13 +156,11 @@ class DbTestController extends AbstractController
 
         $editor = $editorRepository->findByUser($user1);
         dump($editor);
-
         $editor = $editorRepository->findByUser($user2);
         dump($editor);
 
         $writer = $writerRepository->findByUser($user1);
         dump($writer);
-
         $writer = $writerRepository->findByUser($user2);
         dump($writer);
 
@@ -170,6 +168,8 @@ class DbTestController extends AbstractController
         $users = $userRepository->findByRoles($role);
         dump($users);
 
+        $articles = $articleRepository->findByPublishedAtIsNull();
+        dump($articles);
         exit();
     }
 }
