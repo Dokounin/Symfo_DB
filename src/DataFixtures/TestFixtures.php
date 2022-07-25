@@ -85,7 +85,7 @@ class TestFixtures extends Fixture
             [
                 'title' => 'Bœuf bourguignon',
                 'body' => 'Un plat française typique',
-                'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2022-07-01 09:00:00'),
+                'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2022-06-30 09:00:00'),
                 'category' => $categories[0],
                 'tags' => [$tags[2]],
             ],

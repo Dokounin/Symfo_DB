@@ -10,6 +10,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\EditorRepository;
 use App\Repository\UserRepository;
 use App\Repository\WriterRepository;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -169,6 +170,10 @@ class DbTestController extends AbstractController
         dump($users);
 
         $articles = $articleRepository->findByPublishedAtIsNull();
+        dump($articles);
+
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', "2022-06-30 00:00:00");
+        $articles = $articleRepository->findByPublishedAtBefore($date);
         dump($articles);
         exit();
     }
