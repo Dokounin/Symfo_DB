@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Writer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,19 @@ class WriterRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByUser(User $user): ?Writer
+    {
+        return $this->createQueryBuilder('w')
+            // faire une jointure avec l'utilisateur associé au profil editeur
+            ->join('w.user', 'u')
+            // ne retenir que le profil éditeur qui est associé a l'utilisateur passé en paramètre de la fonction
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            // exécution de la requête
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

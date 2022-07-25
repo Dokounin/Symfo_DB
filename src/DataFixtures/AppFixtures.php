@@ -8,6 +8,8 @@ use App\Entity\Writer;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
+
 class AppFixtures extends Fixture
 {
     public function __construct(UserPasswordEncoderInterface $encoder)

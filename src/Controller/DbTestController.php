@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Category;
-use App\Entity\Tag;
 use App\Entity\Article;
+use App\Entity\Category;
 use App\Entity\Page;
+use App\Entity\Tag;
 use App\Repository\ArticleRepository;
 use App\Repository\EditorRepository;
 use App\Repository\UserRepository;
@@ -16,64 +15,62 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 class DbTestController extends AbstractController
 {
     #[Route('/db/test/fixtures', name: 'app_db_test_fixtures')]
     public function fixtures(ManagerRegistry $doctrine): Response
     {
-        //récupération du repository des catégories
+        // récupération du repository des catégories
         $repository = $doctrine->getRepository(Category::class);
-        // récupération de la liste complète de toutes les categories
+        // récupération de la liste complète de toutes les catégories
         $categories = $repository->findAll();
-        //inspection de la liste
+        // inspection de la liste
         dump($categories);
 
-        //récupération du repository des tags
+        // récupération du repository des tags
         $repository = $doctrine->getRepository(Tag::class);
-        // récupération de la liste complète de toutes les tags
+        // récupération de la liste complète de tous les tags
         $tags = $repository->findAll();
-        //inspection de la liste
+        // inspection de la liste
         dump($tags);
 
-        //récupération du repository des articles
+        // récupération du repository des articles
         $repository = $doctrine->getRepository(Article::class);
-        // récupération de la liste complète de toutes les articles
+        // récupération de la liste complète de tous les articles
         $articles = $repository->findAll();
-        //inspection de la liste
-        dump($articles);
 
         foreach ($articles as $article) {
-            // inspection d'un article
+            // inspection de l'article
             dump($article);
+
             // récupération des tags de l'article
             $tags = $article->getTags();
 
             foreach ($tags as $tag) {
-                // inspection de tags
+                // inspection du tag
                 dump($tag);
             }
         }
-        //récupération du repository des pages
+
+        // récupération du repository des pages
         $repository = $doctrine->getRepository(Page::class);
         // récupération de la liste complète de toutes les pages
         $pages = $repository->findAll();
-        // inspection de la liste des 0pages
+        // inspections de la liste des pages
         dump($pages);
+
         exit();
     }
 
-    #[Route('db/test/orm', name: 'app_db_test_orm')]
+    #[Route('/db/test/orm', name: 'app_db_test_orm')]
     public function orm(ManagerRegistry $doctrine): Response
     {
-        // récupération du repository l'entité Tag
+        // récupération du repository de l'entité Tag
         $repository = $doctrine->getRepository(Tag::class);
 
-        // récupération 
+        // récupération de tous les objets de type Tag
         $tags = $repository->findAll();
         dump($tags);
-
-
 
         // récupération d'un objet à partir de son id
         $id = 1;
@@ -81,18 +78,18 @@ class DbTestController extends AbstractController
         dump($tag);
 
         // récupération de plusieurs objets à partir de son name
-        $tags = $repository->findBy((['name' => 'carné']));
+        $tags = $repository->findBy(['name' => 'carné']);
         dump($tags);
 
-        // récupération d'un objets à partir de son name
-        $tag = $repository->findOneBy((['name' => 'carné']));
+        // récupération d'un objet à partir de son name
+        $tag = $repository->findOneBy(['name' => 'carné']);
         dump($tag);
 
         // récupération de l'Entity Manager
         $manager = $doctrine->getManager();
 
-        // supression d'un objet dans la BDD
         if ($tag) {
+            // suppression d'un objet
             $manager->remove($tag);
             $manager->flush();
         }
@@ -103,44 +100,71 @@ class DbTestController extends AbstractController
         dump($tag->getName());
 
         // modification d'un objet
-        $tag->setName('foo bar baz');
+        $tag->setName('Foo bar baz');
         dump($tag->getName());
 
-        // enregitrement de la modification dans la BDD
+        // enregistrement de la modification dans la BDD
         $manager->flush();
 
         // création d'un nouvel objet
         $tag = new Tag();
         $tag->setName('le dernier tag');
         dump($tag);
-        // demande d'enregitrement de la objet dans la BDD
+
+        // demande d'enregistrement de l'objet dans la BDD
         $manager->persist($tag);
         $manager->flush();
         dump($tag);
 
         exit();
     }
-    #[Route('db/test/repository', name: 'app_db_test_repository')]
-    public function repository(ArticleRepository $articleRepository, UserRepository $userRepository, WriterRepository $writerRepository, EditorRepository $editorRepository)
-    {
-        // récupération du repository des articles par order alphabétique de 'title'
+
+    #[Route('/db/test/repository', name: 'app_db_test_repository')]
+    public function repository(
+        ArticleRepository $articleRepository,
+        EditorRepository $editorRepository,
+        UserRepository $userRepository,
+        WriterRepository $writerRepository
+    ): Response {
         $articles = $articleRepository->findAllSorted();
-        //inspection de la liste
         dump($articles);
 
-
-        $articles = $articleRepository->findByKeyword('borsh');
+        $articles = $articleRepository->findByKeyword('plat');
         dump($articles);
 
         $writer = $writerRepository->find(1);
         $user = $writer->getUser();
+        // force doctrine à lancer le lazy loading
         $user->getEmail();
         dump($user);
 
         $editor = $editorRepository->find(1);
         $user = $editor->getUser();
+        // force doctrine à lancer le lazy loading
         $user->getEmail();
         dump($user);
+
+        $user1 = $userRepository->find(1);
+        // force doctrine à lancer le lazy loading
+        $user1->getEmail();
+        dump($user1);
+
+        $user2 = $userRepository->find(2);
+        // force doctrine à lancer le lazy loading
+        $user2->getEmail();
+        dump($user2);
+
+        $editor = $editorRepository->findByUser($user1);
+        dump($editor);
+
+        $editor = $editorRepository->findByUser($user2);
+        dump($editor);
+
+        $writer = $writerRepository->findByUser($user1);
+        dump($writer);
+
+        $writer = $writerRepository->findByUser($user2);
+        dump($writer);
 
         exit();
     }
