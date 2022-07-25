@@ -166,6 +166,10 @@ class DbTestController extends AbstractController
         $writer = $writerRepository->findByUser($user2);
         dump($writer);
 
+        $role = 'ROLE_WRITER';
+        $users = $userRepository->findByRoles($role);
+        dump($users);
+
         exit();
     }
 }
