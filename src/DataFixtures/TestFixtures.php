@@ -63,7 +63,7 @@ class TestFixtures extends Fixture
             $tag->setName($tagName);
             $manager->persist($tag);
         }
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 10; $i++) {
 
             $tag = new Tag();
             $tag->setName("{$faker->word()}");
