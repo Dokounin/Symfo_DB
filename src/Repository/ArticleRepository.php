@@ -105,7 +105,7 @@ class ArticleRepository extends ServiceEntityRepository
        public function findNLast(int $n): array
        {
            return $this->createQueryBuilder('a')
-               ->orderBy('a.published_at', 'DESC')
+               ->orderBy('a.id', 'ASC')
                ->setMaxResults($n)
                ->getQuery()
                ->getResult()

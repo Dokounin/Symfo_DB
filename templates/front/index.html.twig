@@ -2,12 +2,12 @@
 body %}
 <h1>Homepage</h1>
 
-<h2>Les 5 derniers articles parus</h2>
+<h2>Les 5 premiers articles parus</h2>
 {% if articles %}
 <ul>
   {% for article in articles %}
   <li>
-    <a href="">{{ article.title }}</a>
+    <a href="{{ path('app_front_article', {'id': article.id})}}">{{ article.title }}</a>
     {% if article.writer %}
         (auteur : {{ article.writer.user.email }})
     {% endif %}
@@ -17,3 +17,9 @@ body %}
 {% else %}
 Il n'y a encore aucun article.
 {% endif %} {% endblock %}
+
+{% block body_javascripts %}
+<script>
+console.log("Hello!")
+</script>
+{% endblock %}
