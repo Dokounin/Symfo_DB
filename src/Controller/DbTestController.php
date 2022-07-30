@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\Page;
@@ -10,7 +11,6 @@ use App\Repository\ArticleRepository;
 use App\Repository\EditorRepository;
 use App\Repository\UserRepository;
 use App\Repository\WriterRepository;
-use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -160,24 +160,30 @@ class DbTestController extends AbstractController
         $editor = $editorRepository->findByUser($user2);
         dump($editor);
 
-        dump(serialize($editor));
-        exit();
-
         $writer = $writerRepository->findByUser($user1);
         dump($writer);
         $writer = $writerRepository->findByUser($user2);
         dump($writer);
 
         $role = 'ROLE_WRITER';
-        $users = $userRepository->findByRoles($role);
+        $users = $userRepository->findByRole($role);
         dump($users);
 
         $articles = $articleRepository->findByPublishedAtIsNull();
         dump($articles);
 
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', "2022-06-30 00:00:00");
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2022-06-30 00:00:00');
         $articles = $articleRepository->findByPublishedAtBefore($date);
         dump($articles);
+
+        $writer = $writerRepository->find(1);
+        $article1 = $articleRepository->find(1);
+        $article4 = $articleRepository->find(4);
+        $isAuthor = $writerRepository->isAuthor($writer, $article1);
+        dump($isAuthor);
+        $isAuthor = $writerRepository->isAuthor($writer, $article4);
+        dump($isAuthor);
+
         exit();
     }
 }

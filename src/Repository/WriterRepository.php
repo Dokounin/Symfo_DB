@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Article;
 use App\Entity\User;
 use App\Entity\Writer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -47,28 +48,48 @@ class WriterRepository extends ServiceEntityRepository
         return $this->__findByUser($user);
     }
 
-    //    /**
-    //     * @return Writer[] Returns an array of Writer objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('w')
-    //            ->andWhere('w.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('w.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function isAuthor(Writer $writer, Article $article): bool
+    {
+        // la requête renvoie un objet de type writer ou une valeur nulle
+        // en convertissant cette valeur en booléen, cela permet de renvoyer :
+        // - une valeur true si le rédacteur et l'article sont liés
+        // - une valeur false si le rédacteur et l'article ne sont pas liés
+        return (bool) $this->createQueryBuilder('w')
+            // demande de jointure qui exclut les rédacteurs sans article
+            ->innerJoin('w.articles', 'a')
+            // sélection du rédacteur passé en paramètre
+            ->andWhere('w.id = :writerId')
+            // sélection de l'article passé en paramètre
+            ->andWhere('a.id = :articleId')
+            ->setParameter('writerId', $writer->getId())
+            ->setParameter('articleId', $article->getId())
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
-    //    public function findOneBySomeField($value): ?Writer
-    //    {
-    //        return $this->createQueryBuilder('w')
-    //            ->andWhere('w.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+//    /**
+//     * @return Writer[] Returns an array of Writer objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('w')
+//            ->andWhere('w.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('w.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+
+//    public function findOneBySomeField($value): ?Writer
+//    {
+//        return $this->createQueryBuilder('w')
+//            ->andWhere('w.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }
