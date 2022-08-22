@@ -98,7 +98,7 @@ class TestFixtures extends Fixture
                 
 
             ],
-            [
+            [   
                 'title' => 'Borsh',
                 'body' => 'Un plat ukrainien typique',
                 'published_at' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2022-07-03 11:00:00'),
