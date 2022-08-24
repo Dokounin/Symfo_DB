@@ -7,6 +7,7 @@ use DateInterval;
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 /**
  * @extends ServiceEntityRepository<Article>
@@ -106,11 +107,16 @@ class ArticleRepository extends ServiceEntityRepository
    /**
     * @return Article[] Returns an array of Article objects
     */
-   public function findNLast(int $n): array
+   public function findNLastPublished(int $n): array
    {
+        $date = new DateTime();
        return $this->createQueryBuilder('a')
-           ->orderBy('a.published_at', 'DESC')
+       // on filtre les articles qui ne paraîtront que dans le futur
+           ->andWhere('a.published_at <= :date')
+           ->andWhere('a.published_at IS NOT NULL')
+           ->orderBy('a.published_at','DESC')
            ->setMaxResults($n)
+           ->setParameter('date',$date->format('Y-m-d H:d:s'))
            ->getQuery()
            ->getResult()
        ;
